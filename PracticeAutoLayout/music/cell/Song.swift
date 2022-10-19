@@ -19,7 +19,7 @@ final class Song: UICollectionViewCell {
   
   let title: UILabel = {
     let title = UILabel()
-    title.textColor = .white
+    title.textColor = .black
     title.numberOfLines = 1
     title.font = .systemFont(ofSize: 18, weight: .bold)
     return title
@@ -60,7 +60,7 @@ final class Song: UICollectionViewCell {
     }
     
     VStack.snp.makeConstraints { make in
-      make.left.equalTo(albumArt.snp.right).offset(5)
+      make.left.equalTo(albumArt.snp.right).offset(15)
       make.top.bottom.equalTo(albumArt)
     }
   }

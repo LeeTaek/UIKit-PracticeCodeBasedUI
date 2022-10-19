@@ -9,7 +9,7 @@ import UIKit
 
 class MusicViewController: UIViewController {
   lazy var collectionView: UICollectionView = {
-    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.setupAlbumLayout())
+    let collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.setupLayout())
     collectionView.isScrollEnabled = true
     collectionView.showsHorizontalScrollIndicator = false
     collectionView.showsVerticalScrollIndicator = true
@@ -18,6 +18,7 @@ class MusicViewController: UIViewController {
     
     collectionView.register(AlbumHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AlbumHeader")
     collectionView.register(Album.self, forCellWithReuseIdentifier: "Album")
+    collectionView.register(Song.self, forCellWithReuseIdentifier: "Song")
     
     return collectionView
   }()
@@ -39,8 +40,10 @@ class MusicViewController: UIViewController {
     }
   }
   
-  private func setupAlbumLayout() -> UICollectionViewCompositionalLayout {
+  private func setupLayout() -> UICollectionViewCompositionalLayout {
     UICollectionViewCompositionalLayout{ (section, env) -> NSCollectionLayoutSection? in
+      switch self.dataSource[section] {
+      case .album :
         //item
         let itemSize = NSCollectionLayoutSize (
           widthDimension: .fractionalWidth(0.5),
@@ -79,58 +82,111 @@ class MusicViewController: UIViewController {
         section.boundarySupplementaryItems = [header]
         
         return section
-      
-      
+        
+      case .song:
+        // item
+        let itemSize = NSCollectionLayoutSize(
+          widthDimension: .fractionalWidth(1.0),
+          heightDimension: .fractionalHeight(1.0)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 8)
+        
+        // group
+        let groupSize = NSCollectionLayoutSize(
+          widthDimension: .fractionalWidth(0.9),
+          heightDimension: .fractionalHeight(1.0/4.0)
+        )
+        let group = NSCollectionLayoutGroup.vertical(
+          layoutSize: groupSize,
+          subitem: item,
+          count: 4
+        )
+        
+        // header
+        let headerSize = NSCollectionLayoutSize(
+          widthDimension: .fractionalWidth(0.95),
+          heightDimension: .absolute(40)
+        )
+        let header = NSCollectionLayoutBoundarySupplementaryItem(
+          layoutSize: headerSize,
+          elementKind: UICollectionView.elementKindSectionHeader,
+          alignment: .top
+        )
+  
+        // section
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
+        section.boundarySupplementaryItems = [header]
+        return section
+      }
     }
   }
 }
 
 
 extension MusicViewController: UICollectionViewDataSource {
-  func collectionVIew(in collectionView: UICollectionView) -> Int {
+  func numberOfSections(in collectionView: UICollectionView) -> Int {
     return dataSource.count
   }
   
-  
+  // 섹션에 따른 아이템 수 설정
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    if case let Music.music(musics) = dataSource[section] {
+    switch dataSource[section] {
+    case let .album(musics):
       return musics.count
-    } else {
-      return 1
+    case let .song(songs):
+      return songs.count
     }
-    
   }
   
   
-  
+  // 셀 설정
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    
-    if case let Music.music(musics) = dataSource[indexPath.section] {
+    switch dataSource[indexPath.section]{
+    case let .album(musics):
       let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Album", for: indexPath) as! Album
       let item = musics[indexPath.item]
       cell.setupContent(albumArt: item.albumArt, descText: item.desc, title: item.title)
       
       return cell
-    }else {
-      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Album", for: indexPath) as! Album
+      
+    case let .song(songs):
+      let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Song", for: indexPath) as! Song
+      let item = songs[indexPath.item]
+      cell.setupContent(albumArt: item.artistImage, descText: item.desc, title: item.songTitle)
+      
       return cell
     }
-  }
-  
-  
-  func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-    let header = collectionView.dequeueReusableSupplementaryView(
-      ofKind: UICollectionView.elementKindSectionHeader,
-      withReuseIdentifier: "AlbumHeader",
-      for: indexPath
-    ) as! AlbumHeader
-    
-    header.setupContent(albumArt: UIImage(named: "이찬혁"), descText: "GD", artist: "이찬혁")
-    
-    return header
-  }
 
-    
+  }
+  
+  // 헤더 설정
+  func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    switch dataSource[indexPath.section] {
+    case .album:
+      let header = collectionView.dequeueReusableSupplementaryView(
+        ofKind: UICollectionView.elementKindSectionHeader,
+        withReuseIdentifier: "AlbumHeader",
+        for: indexPath
+      ) as! AlbumHeader
+      
+      header.setupContent(albumArt: UIImage(named: "이찬혁"), descText: "GD", artist: "이찬혁")
+      
+      return header
+      
+    case .song:
+      let header = collectionView.dequeueReusableSupplementaryView(
+        ofKind: UICollectionView.elementKindSectionHeader,
+        withReuseIdentifier: "AlbumHeader",
+        for: indexPath
+      ) as! AlbumHeader
+      
+      header.setupContent(albumArt: UIImage(systemName: "music.note"), descText: nil, artist: "인기 신곡")
+      
+      return header
+    }
+  }
 }
   
   

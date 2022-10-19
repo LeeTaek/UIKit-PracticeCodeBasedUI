@@ -9,7 +9,7 @@ import UIKit
 
 enum Music {
   case song([Song])
-  case music([Album])
+  case album([Album])
   
   struct Song {
     let artistImage: UIImage
