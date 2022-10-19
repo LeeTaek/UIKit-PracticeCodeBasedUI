@@ -26,6 +26,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     let tbc = UITabBarController()
     
+    let musicView = MusicViewController()
     let view1 = ViewController()
     let view2 = ViewController2()
     let view3 = ViewController3()
@@ -37,19 +38,25 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     self.window = window
 
     
-    tbc.setViewControllers([view1, view2, view3], animated: true)
+    tbc.setViewControllers([musicView, view1, view2, view3], animated: true)
+    
+    musicView.tabBarItem = UITabBarItem(title: "음악",
+                                        image: UIImage(systemName:"song"),
+                                        tag: 1)
     
     view1.tabBarItem = UITabBarItem(title: "첫번째",
                                     image: UIImage(systemName: "heart.fill") ,
-                                    tag: 1)
+                                    tag: 2)
     
     view2.tabBarItem = UITabBarItem(title: "두번째",
                                     image: UIImage(systemName: "person") ,
-                                    tag: 2)
+                                    tag: 3)
     
     view3.tabBarItem = UITabBarItem(title: "세번째",
                                     image: UIImage(systemName: "circle") ,
-                                    tag: 3)
+                                    tag: 4)
+    
+    
     
     tbc.tabBar.backgroundColor = .white
     

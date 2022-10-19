@@ -45,7 +45,7 @@ class ViewController3: UIViewController {
   }
     
   
-  func setupView() {
+  private func setupView() {
     segmentCotrol.addTarget(self, action: #selector(didChangeValue(segment:)), for: .valueChanged)
     segmentCotrol.selectedSegmentIndex = 0
     didChangeValue(segment: self.segmentCotrol)
@@ -56,7 +56,7 @@ class ViewController3: UIViewController {
   }
   
   
-  func setupLayout() {
+  private func setupLayout() {
     segmentCotrol.snp.makeConstraints { make in
       make.centerX.equalToSuperview()
       make.centerY.equalToSuperview().offset(-300)

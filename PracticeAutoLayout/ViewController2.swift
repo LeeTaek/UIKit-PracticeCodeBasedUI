@@ -25,12 +25,12 @@ class ViewController2: UIViewController {
     }
     
   
-  func setupView() {
+  private func setupView() {
     view.addSubview(label)
   }
   
   
-  func setupLayout() {
+  private func setupLayout() {
     label.snp.makeConstraints { make in
       make.centerX.equalTo(view.snp.centerX)
       make.centerY.equalTo(view.snp.centerY)

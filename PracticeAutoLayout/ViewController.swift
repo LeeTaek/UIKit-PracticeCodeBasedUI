@@ -38,13 +38,13 @@ class ViewController: UIViewController {
   }
   
   
-  func addView() {
+  private func addView() {
     sampleViews.forEach{
       view.addSubview($0)
     }
   }
   
-  func setupLayout() {
+  private func setupLayout() {
     var xPosition: CGFloat = 0
     var yPosition: CGFloat = 0
     let width: CGFloat = (view.frame.width / 4)
@@ -53,7 +53,7 @@ class ViewController: UIViewController {
       sampleView.snp.makeConstraints { make in
         make.size.width.height.equalTo(width)
         make.left.equalTo(xPosition)
-        make.top.equalTo(yPosition)
+        make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(yPosition)
         
         if xPosition < (view.frame.width/4) * 3 {
           xPosition += width
